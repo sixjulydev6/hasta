@@ -285,7 +285,8 @@ export const startHasta = (): (() => void) => {
       expo: trackN([[0, 0.98], [1.6, 0.98], [2, 0.86], [6.55, 0.86], [7, 0.24], [8.5, 0.24]]),
       room: trackN([[0, 0], [1.62, 0], [1.95, 1], [6.55, 1], [7, 0], [8.5, 0]]),
       eggA: trackN([[0, 1], [5.55, 1], [5.85, 0], [8.5, 0]]),
-      trayA: trackN([[0, 1], [5.6, 1], [5.95, 0], [8.5, 0]])
+      trayA: trackN([[0, 1], [5.6, 1], [5.95, 0], [8.5, 0]]),
+      handsPortrait: trackN([[0, 0], [0.97, 0], [1, 1], [1.5, 1], [2, 0], [8.5, 0]])
     };
 
     /* ----- per-frame ----- */
@@ -444,9 +445,14 @@ export const startHasta = (): (() => void) => {
       /* camera: frame for the viewport, shift for the hero's index column */
       const aspect = shot ? shot.w / shot.h : W / Hh;
       const cp = shot ? shot.cam : K.cam(tau), ct = shot ? shot.tgt.slice() : K.tgt(tau);
-      const far = !shot && aspect < 1.25 ? Math.pow(1.25 / aspect, 0.62) : 1;
+      /* portrait screens in the hands chapter: the view is too narrow for hand and head together,
+         so pan toward the head and pull back a little (full effect at aspect ≤ 0.55, none from 1 up) */
+      const pk = shot ? 0 : clamp((1 - aspect) / 0.45) * K.handsPortrait(tau);
+      const panX = pk * (-0.2 - ct[0]);
+      const far = (!shot && aspect < 1.25 ? Math.pow(1.25 / aspect, 0.62) : 1) * (1 + 0.2 * pk);
       camera.fov = shot ? shot.fov : K.fov(tau); camera.aspect = aspect;
-      camera.position.set(ct[0] + (cp[0] - ct[0]) * far, ct[1] + (cp[1] - ct[1]) * far, ct[2] + (cp[2] - ct[2]) * far);
+      camera.position.set(ct[0] + panX + (cp[0] - ct[0]) * far, ct[1] + (cp[1] - ct[1]) * far, ct[2] + (cp[2] - ct[2]) * far);
+      ct[0] += panX;
       /* on tall screens sit the subject lower, clear of the headline */
       const drop = (shot ? 0 : 1) * clamp((1.25 - aspect) / 0.75) * 0.075 * Math.hypot(camera.position.x - ct[0], camera.position.y - ct[1], camera.position.z - ct[2]);
       camera.position.y += drop; ct[1] += drop;
