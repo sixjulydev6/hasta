@@ -88,6 +88,7 @@ export const startHasta = (): (() => void) => {
 
   /* ---------- chrome ---------- */
   const menuBtn = $('#menuBtn'), nav = $('#nav'), navLinks = $$('#nav a'), tabs = $('#tabs'), tabLinks = $$('#tabs a');
+  const fogs = $$('.fog');
   const bgs = $$('.bg'), forceRows = $$('#force .row').map(r => ({ out: r.querySelector('output'), bar: r.querySelector('b') }));
   let menuOpen = false;
   const last: Record<string, Primitive> = {};
@@ -107,6 +108,12 @@ export const startHasta = (): (() => void) => {
     put('hp', hp.toFixed(3), v => root.style.setProperty('--hp', v));
     put('sy', Math.min(y, vh * 1.6).toFixed(0), v => root.style.setProperty('--sy', v));
     for (let i = 1; i < bgs.length; i++) put('bg' + i, clamp((tau - (i - 0.5)) * 2).toFixed(3), v => { bgs[i].style.opacity = v; });
+    /* mobile top fog: only while chapter i is settled (its copy pinned, tau in [i, i + 0.5]);
+       it fades out quickly once the hand-over scroll starts, so no fog moves with the transition */
+    for (const f of fogs) {
+      const i = Number(f.dataset.ch), o = clamp((tau - (i - 0.1)) / 0.1) * (1 - clamp((tau - (i + 0.5)) / 0.1));
+      put('fog' + i, o.toFixed(3), v => { f.style.opacity = v; });
+    }
     chEls.forEach((el, i) => put('x' + i, clamp((tau - i - 0.5) * 5).toFixed(2), v => el.style.setProperty('--x', v)));
     const ci = clamp(Math.floor(tauRaw + 0.25), 0, chEls.length - 1);
     /* mark the nav link for whichever section fills the middle of the screen */

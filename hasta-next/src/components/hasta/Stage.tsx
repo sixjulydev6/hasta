@@ -12,5 +12,8 @@ export const Stage = () => (
       <div className="box" id="box-egg"><span className="chip hot"><b>Egg</b> 57 mm · fragile</span></div>
       <div className="hud-tag">Hasta view · depth</div>
     </div>
+    {/* narrow screens: top fog behind the chapter headlines, one layer per chapter, crossfaded from scroll */}
+    <div className="fog f1" data-ch="1"></div><div className="fog f2" data-ch="2"></div><div className="fog f3" data-ch="3"></div>
+    <div className="fog f4" data-ch="4"></div><div className="fog f5" data-ch="5"></div><div className="fog f6" data-ch="6"></div>
   </div>
 );
