@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2c57a6"/>
+      <stop offset=".55" stop-color="#8aa1d7"/>
+      <stop offset="1" stop-color="#e6d1d7"/>
+    </linearGradient>
+    <radialGradient id="visor" cx=".38" cy=".3" r=".8">
+      <stop offset="0" stop-color="#3a3d44"/>
+      <stop offset=".45" stop-color="#0b0c0e"/>
+      <stop offset="1" stop-color="#050607"/>
+    </radialGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#sky)"/>
+  <!-- Hasta's head: gloss ovoid visor with dot-matrix eyes -->
+  <path d="M32 8c11 0 18 8 18 20 0 13-7 25-18 25S14 41 14 28C14 16 21 8 32 8z" fill="url(#visor)"/>
+  <path d="M20.5 22c1.5-6 6-9.5 11.5-9.5" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="2" stroke-linecap="round"/>
+  <g fill="#fff"><circle cx="23.6" cy="26.2" r="1.2"/><circle cx="26.4" cy="26.2" r="1.2"/><circle cx="22.2" cy="29" r="1.2"/><circle cx="25" cy="29" r="1.2"/><circle cx="27.8" cy="29" r="1.2"/><circle cx="23.6" cy="31.8" r="1.2"/><circle cx="26.4" cy="31.8" r="1.2"/><circle cx="37.6" cy="26.2" r="1.2"/><circle cx="40.4" cy="26.2" r="1.2"/><circle cx="36.2" cy="29" r="1.2"/><circle cx="39" cy="29" r="1.2"/><circle cx="41.8" cy="29" r="1.2"/><circle cx="37.6" cy="31.8" r="1.2"/><circle cx="40.4" cy="31.8" r="1.2"/></g>
+</svg>
