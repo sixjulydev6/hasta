@@ -1,0 +1,211 @@
+<div class="stage" id="stage" aria-hidden="true">
+  <div class="bg b0"></div><div class="bg b1"></div><div class="bg b2"></div><div class="bg b3"></div>
+  <div class="bg b4"></div><div class="bg b5"></div><div class="bg b6"></div><div class="bg b7"></div>
+  <p class="hero-title">Strength is solved.<br>Hands aren’t.</p>
+  <canvas id="gl"></canvas>
+  <div class="vig"></div>
+  <div class="hud" id="hud">
+    <div class="sweep"></div>
+    <div class="box" id="box-tray"><span class="chip"><b>Tray</b> 40 × 27 cm</span></div>
+    <div class="box" id="box-egg"><span class="chip hot"><b>Egg</b> 57 mm · fragile</span></div>
+    <div class="hud-tag">Hasta view · depth</div>
+  </div>
+</div>
+
+<header class="top" id="topbar">
+  <a class="logo glass" href="#top" aria-label="Hasta, back to top">Hasta</a>
+  <nav class="nav glass" id="nav" aria-label="Primary">
+    <a href="#top" data-g="top intro"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M2.5 7.2 8 2.6l5.5 4.6v5.3a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1z M6.4 13.5V9.6h3.2v3.9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>Home</a>
+    <a href="#hands" data-g="hands vision grip touch handover">Hands</a>
+    <a href="#rounds" data-g="rounds">Rounds</a>
+    <a href="#places" data-g="places">Where it works</a>
+    <a href="#shift" data-g="shift">A shift</a>
+    <a href="#specs" data-g="specs finale about">In brief</a>
+  </nav>
+  <div class="tools">
+    <button class="sq glass menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2.5 5h11M2.5 8h11M2.5 11h11" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs" aria-label="Chapters">
+  <a href="#hands">Hands</a><a href="#vision">Vision</a><a href="#grip">Grip</a>
+  <a href="#touch">Touch</a><a href="#handover">Handover</a><a href="#rounds">Rounds</a>
+</nav>
+
+<main id="story">
+  <section class="ch hero" id="top" data-tone="dark">
+    <div class="pin">
+      <h1 class="vh">Strength is solved. Hands aren’t.</h1>
+      <div class="hero-foot">
+        <p>Robots have lifted heavy things for decades. Picking up an egg without cracking it is still the hard part.</p>
+        <a class="chipbtn cta" href="#hands"><span>Meet the hands</span><i aria-hidden="true">↓</i></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec light statement" id="intro" data-tone="light">
+    <div class="wrap">
+      <h2 class="mega shimmer">Look. Hold.<br><span class="shine">Hand over.</span></h2>
+      <div class="tri">
+        <p class="k">Hasta service robot</p>
+        <div>
+          <p>Hasta is a service robot designed from the fingertips back. It sees what it is about to touch, closes on it with less force than you would use, and passes it to a person the way a person would.</p>
+          <p class="strong">Twenty motors in each hand. One job: get it there whole.</p>
+        </div>
+        <div><a class="btn" href="#hands">See the hands <span aria-hidden="true">↓</span></a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch" id="hands" data-tone="dark">
+    <div class="pin">
+      <div class="head">
+        <p class="eyebrow">Hands</p>
+        <h2>Every finger moves on its own.</h2>
+        <p class="lede">Twenty motors in each hand, and a touch sensor under every pad.</p>
+        <button class="link" id="fiveBtn" type="button">Tap for a high-five</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch" id="vision" data-tone="dark">
+    <div class="pin">
+      <div class="head">
+        <p class="eyebrow">Vision</p>
+        <h2>First, it looks.</h2>
+        <p class="lede">Before a finger moves, it knows what the egg is, how far away it sits and where each fingertip will go.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch" id="grip" data-tone="light">
+    <div class="pin">
+      <div class="head">
+        <p class="eyebrow">Grip</p>
+        <h2>Firm enough to lift. Gentle enough not to crack.</h2>
+        <p class="lede">An egg cracks at about 45 newtons. Hasta holds it with less than one in each fingertip.</p>
+      </div>
+      <aside class="force glass" id="force" aria-label="Fingertip force, live">
+        <header><span>Fingertip force</span><span>N</span></header>
+        <div class="row"><span>Thumb</span><i><b></b></i><output>0.00</output></div>
+        <div class="row"><span>Index</span><i><b></b></i><output>0.00</output></div>
+        <div class="row"><span>Middle</span><i><b></b></i><output>0.00</output></div>
+        <footer>Each bar ends at 45 N</footer>
+      </aside>
+    </div>
+  </section>
+
+  <section class="ch" id="touch" data-tone="light">
+    <div class="pin">
+      <div class="head">
+        <p class="eyebrow">Touch</p>
+        <h2>Its fingertips can feel.</h2>
+        <p class="lede">Ribbed pads read pressure 1,000 times a second and catch a slip before it shows.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch" id="handover" data-tone="light">
+    <div class="pin">
+      <div class="head">
+        <p class="eyebrow">Made for people</p>
+        <h2>It hands things over the way a person would.</h2>
+        <p class="lede">Slowly, palm up, at a height you can reach.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch" id="rounds" data-tone="light">
+    <div class="pin">
+      <div class="head">
+        <p class="eyebrow">Hasta in hospitals and hotels</p>
+        <h2>Built for the rounds nobody has time for.</h2>
+        <p class="lede">Meals, medicines and linen, carried down the corridor, so your staff can stay with people.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec dark places" id="places" data-tone="dark">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="k dash">Where it works</p>
+          <h2 class="shimmer">Wherever<br><span class="shine">hands are short.</span></h2>
+        </div>
+        <div>
+          <p class="k">One robot. The same careful grip in every building.</p>
+          <p class="lede">Hasta does the carrying that pulls trained people away from the people they trained for. It fits through a standard door, takes the lift, and works the same corridor twice without getting bored.</p>
+        </div>
+      </div>
+    </div>
+    <div class="rail" id="rail" tabindex="0" role="group" aria-label="Places Hasta works">
+      <article class="card"><div class="shot c-tan" data-shot="0"></div><h3>Hospital wards</h3><p>Medicine cups and water to the bedside, for the right patient, so nurses stay on the ward.</p></article>
+      <article class="card"><div class="shot c-sage" data-shot="1"></div><h3>Care homes</h3><p>A cup of tea held out slowly, palm up, at chair height. The fortieth round as gentle as the first.</p></article>
+      <article class="card"><div class="shot c-moss" data-shot="2"></div><h3>Hotels</h3><p>A covered plate carried level from the kitchen to the door, at any hour.</p></article>
+      <article class="card"><div class="shot c-ember" data-shot="3"></div><h3>Laboratories</h3><p>Sample jars moved between benches without a tremor or a dropped rack.</p></article>
+      <article class="card"><div class="shot c-cream" data-shot="4"></div><h3>Kitchens</h3><p>Lifted from the cup and set down whole. Eggs survive the trip.</p></article>
+    </div>
+  </section>
+
+  <section class="sec light shift" id="shift" data-tone="light">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="k dash">A shift</p>
+          <h2 class="shimmer">Ten hours on a ward,<br><span class="shine">hour by hour.</span></h2>
+        </div>
+      </div>
+      <ol class="hours">
+        <li><time>07:00</time><h3>Breakfast trays</h3><p class="k">Meals</p><p>Twenty-four trays from the kitchen lift to the bedside tables, lids left on.</p></li>
+        <li><time>09:30</time><h3>Morning medicines</h3><p class="k">Medicines</p><p>Sealed cups carried beside the nurse, handed over one name at a time.</p></li>
+        <li><time>11:00</time><h3>Linen run</h3><p class="k">Linen</p><p>Fresh stacks out to each bay, used bags back to the chute.</p></li>
+        <li><time>12:30</time><h3>Lunch, then water</h3><p class="k">Meals</p><p>Plates out, jugs refilled, cups placed where each person can reach them.</p></li>
+        <li><time>16:00</time><h3>Pack swap</h3><p class="k">Power</p><p>Two minutes at the dock for a fresh pack, then the evening round.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sec dark specs" id="specs" data-tone="dark">
+    <div class="wrap">
+      <div class="specs-head">
+        <p class="k dash">In brief</p>
+        <h2 class="shimmer">One robot,<br><span class="shine">two hands.</span></h2>
+      </div>
+      <dl class="cells">
+        <div><dt>Motors in each hand</dt><dd>20</dd></div>
+        <div><dt>Touch readings per fingertip</dt><dd>1,000<small>/s</small></dd></div>
+        <div><dt>Grip on an egg, per fingertip</dt><dd>&lt; 1<small>N</small></dd></div>
+        <div><dt>Shift on one pack</dt><dd>10<small>h</small></dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="ch finale" id="finale" data-tone="dark">
+    <div class="pin">
+      <div class="head">
+        <p class="eyebrow">The robot</p>
+        <h2>Two hands.<br>One job.</h2>
+        <a class="btn" href="#top">Start again <span aria-hidden="true">↑</span></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot" id="about">
+  <div class="wrap">
+    <div class="foot-cols">
+      <div>
+        <p class="k">The story</p>
+        <a href="#hands">Hands</a><a href="#grip">Grip</a><a href="#handover">Handover</a>
+      </div>
+      <div>
+        <p class="k">The robot</p>
+        <a href="#rounds">Rounds</a><a href="#places">Where it works</a><a href="#specs">In brief</a>
+      </div>
+      <div>
+        <p class="k">About the concept</p>
+        <p class="note">Hasta is a fictional robot. The figures are typical for dexterous robot hands and service robots, not test results. Everything here is drawn live in your browser, with no image or video files.</p>
+      </div>
+    </div>
+  </div>
+</footer>
