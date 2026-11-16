@@ -10,10 +10,14 @@
 
   /* ---------- scroll model ---------- */
   const chEls = $$('.ch'), secEls = $$('main > section, footer'), winEl = $('#about');
-  let chapters = [], secs = [], win = { top: 0, h: 0 }, vh = innerHeight;
+  /* the scroll model measures against the stable small viewport (the initial containing block, what 100svh
+     resolves to), not innerHeight: on phones and tablets innerHeight changes every time the browser toolbar
+     slides in or out mid-scroll, which used to re-time every chapter and make the animation jump */
+  const stableVh = () => root.clientHeight || innerHeight;
+  let chapters = [], secs = [], win = { top: 0, h: 0 }, vh = stableVh();
   const box = (el, y) => ({ el, top: el.getBoundingClientRect().top + y, h: el.offsetHeight });
   function measure() {
-    vh = innerHeight;
+    vh = stableVh();
     const y = scrollY;
     chapters = chEls.map(el => box(el, y)); secs = secEls.map(el => box(el, y)); win = box(winEl, y);
   }
@@ -49,10 +53,13 @@
   document.addEventListener('click', e => { if (menuOpen && !e.target.closest('#nav')) setMenu(false); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && menuOpen) { setMenu(false); menuBtn.focus(); } });
 
+  const hpEls = $$('#stage, #topbar'), heroTitle = $('.hero-title');
   function chrome(tau, tauRaw) {
     const y = scrollY, hp = clamp(y / (vh * 0.45));
-    put('hp', hp.toFixed(3), v => root.style.setProperty('--hp', v));
-    put('sy', Math.min(y, vh * 1.6).toFixed(0), v => root.style.setProperty('--sy', v));
+    /* set on the few elements that read them, not on <html>: a custom property changed on the root
+       restyles the whole document every scroll frame, which is expensive on phones and tablets */
+    put('hp', hp.toFixed(3), v => { for (const el of hpEls) el.style.setProperty('--hp', v); });
+    put('sy', Math.min(y, vh * 1.6).toFixed(0), v => { if (heroTitle) heroTitle.style.setProperty('--sy', v); });
     for (let i = 1; i < bgs.length; i++) put('bg' + i, clamp((tau - (i - 0.5)) * 2).toFixed(3), v => { bgs[i].style.opacity = v; });
     chEls.forEach((el, i) => put('x' + i, clamp((tau - i - 0.5) * 5).toFixed(2), v => el.style.setProperty('--x', v)));
     const ci = clamp(Math.floor(tauRaw + 0.25), 0, chEls.length - 1);
@@ -204,7 +211,7 @@
     const offer = arm([-0.15, 1.16, 0.4], [0.08, 0.1, 1], [0, 1, -0.1], [-0.7, -0.7, -0.2], H.cup);
     const offer2 = arm([-0.14, 1.18, 0.47], [0.1, 0.12, 1], [0, 1, -0.12], [-0.7, -0.7, -0.2], H.cup);
     const serve = arm([-0.25, 1.07, 0.3], [0.05, 0.06, 1], [0, 1, -0.06], [-0.5, -0.6, -0.6], H.cup);
-    const RA = [[0, restR], [0.97, restR], [1, wave], [1.5, wave], [2, ready], [2.5, hover], [3, hover], [3.16, over], [3.3, hold], [3.5, lift], [4, show], [4.5, show2], [5, offer], [5.5, offer2], [6, restR], [8.5, restR]];
+    const RA = [[0, restR], [0.97, restR], [1, wave], [1.3, wave], [2, ready], [2.5, hover], [3, hover], [3.16, over], [3.3, hold], [3.5, lift], [4, show], [4.5, show2], [5, offer], [5.5, offer2], [6, restR], [8.5, restR]];
 
     function track(keys) {
       const arr = Array.isArray(keys[0][1]), out = arr ? new Array(keys[0][1].length) : 0;
@@ -229,11 +236,11 @@
     }
 
     const K = {
-      cam: track([[0, [0, 1.54, 2.3]], [0.5, [0, 1.6, 1.8]], [0.97, [0, 1.66, 1.2]], [1, [-0.28, 1.6, 1.3]], [1.5, [-0.56, 1.63, 1.2]], [2, [0, 1.84, 0.3]], [2.5, [-0.02, 1.76, 0.32]], [3, [0.2, 1.08, 1.02]], [3.5, [0.15, 1.17, 1.0]], [4, [0.3, 1.25, 1.05]], [4.5, [0.27, 1.28, 1.11]], [5, [-1.25, 1.12, 2.75]], [5.5, [-1.1, 1.12, 2.65]], [6, [0.02, 1.36, 2.5]], [6.5, [0, 1.35, 2.5]], [7, [0, 1.5, 1.66]], [8.5, [0, 1.5, 1.6]]]),
-      tgt: track([[0, [0, 1.63, 0]], [0.5, [0, 1.66, 0]], [0.97, [0, 1.69, 0]], [1, [-0.44, 1.6, 0.2]], [1.5, [-0.42, 1.6, 0.2]], [2, [0, 0.93, 0.47]], [2.5, [-0.02, 0.93, 0.46]], [3, [-0.11, 0.96, 0.4]], [3.5, [-0.2, 1.08, 0.42]], [4, [-0.1, 1.2, 0.49]], [4.5, [-0.1, 1.21, 0.5]], [5, [-0.25, 1.1, 0.2]], [5.5, [-0.24, 1.1, 0.22]], [6, [-0.56, 1.32, 0]], [6.5, [-0.55, 1.32, 0]], [7, [0, 1.46, 0]], [8.5, [0, 1.46, 0]]]),
-      fov: track([[0, 30], [1, 28], [1.5, 28], [2, 40], [2.5, 38], [3, 25], [3.5, 25], [4, 17], [4.5, 16], [5, 31], [6, 30], [7.5, 30]]),
-      head: track([[0, [0, 0]], [0.97, [0, 0]], [1, [-0.46, -0.04]], [1.5, [-0.5, -0.04]], [2, [-0.05, 0.52]], [2.5, [-0.1, 0.56]], [3, [-0.2, 0.5]], [3.5, [-0.2, 0.42]], [4, [-0.22, 0.3]], [4.5, [-0.2, 0.28]], [5, [0.1, 0.03]], [5.5, [0.08, 0.03]], [6, [0, 0.02]], [6.5, [0, 0.02]], [7, [0, 0]], [8.5, [0, 0]]]),
-      lean: track([[0, 0], [1.5, 0], [2, 0.15], [3.3, 0.16], [3.5, 0.1], [4.5, 0.07], [5, 0.05], [5.5, 0.06], [6, 0], [7.5, 0]]),
+      cam: track([[0, [0, 1.54, 2.3]], [0.5, [0, 1.6, 1.8]], [0.97, [0, 1.66, 1.2]], [1, [-0.28, 1.6, 1.3]], [1.3, [-0.56, 1.63, 1.2]], [2, [0, 1.84, 0.3]], [2.5, [-0.02, 1.76, 0.32]], [3, [0.2, 1.08, 1.02]], [3.5, [0.15, 1.17, 1.0]], [4, [0.3, 1.25, 1.05]], [4.5, [0.27, 1.28, 1.11]], [5, [-1.25, 1.12, 2.75]], [5.5, [-1.1, 1.12, 2.65]], [6, [0.02, 1.36, 2.5]], [6.5, [0, 1.35, 2.5]], [7, [0, 1.5, 1.66]], [8.5, [0, 1.5, 1.6]]]),
+      tgt: track([[0, [0, 1.63, 0]], [0.5, [0, 1.66, 0]], [0.97, [0, 1.69, 0]], [1, [-0.44, 1.6, 0.2]], [1.3, [-0.42, 1.6, 0.2]], [2, [0, 0.93, 0.47]], [2.5, [-0.02, 0.93, 0.46]], [3, [-0.11, 0.96, 0.4]], [3.5, [-0.2, 1.08, 0.42]], [4, [-0.1, 1.2, 0.49]], [4.5, [-0.1, 1.21, 0.5]], [5, [-0.25, 1.1, 0.2]], [5.5, [-0.24, 1.1, 0.22]], [6, [-0.56, 1.32, 0]], [6.5, [-0.55, 1.32, 0]], [7, [0, 1.46, 0]], [8.5, [0, 1.46, 0]]]),
+      fov: track([[0, 30], [1, 28], [1.3, 28], [2, 40], [2.5, 38], [3, 25], [3.5, 25], [4, 17], [4.5, 16], [5, 31], [6, 30], [7.5, 30]]),
+      head: track([[0, [0, 0]], [0.97, [0, 0]], [1, [-0.46, -0.04]], [1.3, [-0.5, -0.04]], [2, [-0.05, 0.52]], [2.5, [-0.1, 0.56]], [3, [-0.2, 0.5]], [3.5, [-0.2, 0.42]], [4, [-0.22, 0.3]], [4.5, [-0.2, 0.28]], [5, [0.1, 0.03]], [5.5, [0.08, 0.03]], [6, [0, 0.02]], [6.5, [0, 0.02]], [7, [0, 0]], [8.5, [0, 0]]]),
+      lean: track([[0, 0], [1.3, 0], [2, 0.15], [3.3, 0.16], [3.5, 0.1], [4.5, 0.07], [5, 0.05], [5.5, 0.06], [6, 0], [7.5, 0]]),
       scan: track([[0, 0], [1.72, 0], [2, 1], [2.5, 1], [2.8, 0], [7.5, 0]]),
       force: track([[0, 0], [3.18, 0], [3.32, 1], [4.55, 1], [4.95, 0], [7.5, 0]]),
       ripple: track([[0, 0], [3.82, 0], [4, 1], [4.5, 1], [4.72, 0], [7.5, 0]]),
@@ -280,16 +287,32 @@
     ];
     const hud = $('#hud'), ew = v3(), fx = v3();
 
+    /* render resolution: touch devices get a lower cap (they run out of fill rate, not pixels), and
+       `quality` steps down when frames keep running long, so scrolling stays fluid on slower GPUs */
+    const coarse = matchMedia('(pointer: coarse)').matches;
+    let quality = 1, slow = 0, sized = '';
     function resize() {
-      W = innerWidth; Hh = innerHeight;
-      renderer.setPixelRatio(Math.min(devicePixelRatio || 1, W < 700 ? 1.75 : 2));
+      /* the canvas is 100lvh tall, so the mobile toolbar sliding in and out does not resize it (and
+         reallocate every render target) in the middle of a scroll */
+      W = canvas.clientWidth || innerWidth; Hh = canvas.clientHeight || innerHeight;
+      const pr = Math.max(1, Math.min(devicePixelRatio || 1, coarse ? 1.5 : W < 700 ? 1.75 : 2) * quality);
+      const key = `${W}x${Hh}@${pr}`;
+      if (key === sized) return;
+      sized = key;
+      renderer.setPixelRatio(pr);
       renderer.setSize(W, Hh, false);
       if (post) { const db = renderer.getDrawingBufferSize(new THREE.Vector2()); post.setSize(db.x, db.y); }
     }
     resize();
+    /* after ~1 s spent below ~40 fps, drop resolution a step (never back up, so it cannot oscillate) */
+    function govern(dt) {
+      if (dt > 1 / 40) slow += dt; else slow = Math.max(0, slow - dt * 0.5);
+      if (slow > 1 && quality > 0.65) { quality -= 0.15; slow = 0; resize(); }
+    }
 
     function frame(tau, dt, time, hp, shot) {
       const idle = reduce || shot ? 0 : 1;
+      if (!shot && dt > 0) govern(dt);
       /* body */
       R.chest.position.y = 1.1 + idle * 0.0022 * Math.sin(time * 1.25);
       R.chest.rotation.x = K.lean(tau) + idle * 0.004 * Math.sin(time * 1.25 + 0.6);
@@ -451,7 +474,7 @@
       renderer.setPixelRatio(1); renderer.setSize(w, h, false);
       if (post) post.setSize(w, h);
       const out = list.map(s => { frame(s.tau, 0, 3, 1, Object.assign({ w, h }, s)); return canvas.toDataURL('image/jpeg', 0.9); });
-      resize();
+      sized = ''; resize();
       return out;
     }
     return { frame, resize, highFive, stills, hello };
@@ -468,7 +491,17 @@
   try { gl = init3D(); } catch (err) { root.classList.add('no-gl'); }
   measure(); fitWordmark();
   let tauS = tauAt(scrollY), lastT = performance.now(), override = null;
-  addEventListener('resize', () => { measure(); fitWordmark(); if (gl) gl.resize(); });
+  /* coalesce resize bursts into one pass per frame; the wordmark only refits when the width changes
+     (a height-only resize on touch devices is the toolbar moving) */
+  let resizeRaf = 0, lastW = innerWidth;
+  addEventListener('resize', () => {
+    cancelAnimationFrame(resizeRaf);
+    resizeRaf = requestAnimationFrame(() => {
+      measure();
+      if (innerWidth !== lastW) { lastW = innerWidth; fitWordmark(); }
+      if (gl) gl.resize();
+    });
+  });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measure(); fitWordmark(); });
   addEventListener('load', () => { measure(); fitWordmark(); });
   const five = () => { if (gl) gl.highFive(); };

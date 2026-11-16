@@ -307,6 +307,7 @@ function makeMaterials() {
   }, 0.75);
   micro.map.colorSpace = THREE.NoColorSpace;
   const grain = k => new THREE.Vector2(k, k);
+  const twN = heightToNormal(256, twillHeight, 2.4), twA = twillAlbedo(256);   /* 2×2 twill carbon weave */
   for (const t of [oakT.map, oakT.normalMap]) t.repeat.set(1.25, 2.5);
   const M = {
     /* studio pieces fade as one, so each is transparent-capable */
@@ -315,7 +316,8 @@ function makeMaterials() {
     oak: S({ map: oakT.map, normalMap: oakT.normalMap, normalScale: new THREE.Vector2(0.4, 0.4), roughness: 0.55, envMapIntensity: 0.22 }),
     cup: P({ color: 0xeeebe4, roughness: 0.2, metalness: 0, clearcoat: 0.8, clearcoatRoughness: 0.12, transparent: true, envMapIntensity: 0.8 }),
     /* body shells: satin gunmetal paint, darker graphite secondary panels, anodised finger shells */
-    carbon: P({ color: 0x33363b, normalMap: micro.normalMap, normalScale: grain(0.32), roughnessMap: micro.map, roughness: 0.58, metalness: 0.66, clearcoat: 0.14, clearcoatRoughness: 0.5, envMapIntensity: 1.05 }),
+    /* body shells: carbon-fibre twill under a clear coat */
+    carbon: P({ map: twA, normalMap: twN, normalScale: grain(0.55), roughness: 0.48, metalness: 0.45, clearcoat: 0.45, clearcoatRoughness: 0.3, envMapIntensity: 1.0 }),
     gloss: P({ color: 0x050607, roughnessMap: micro.map, roughness: 0.07, metalness: 0.9, clearcoat: 1, clearcoatRoughness: 0.03, envMapIntensity: 1.5 }),
     satin: P({ color: 0x141518, normalMap: micro.normalMap, normalScale: grain(0.28), roughnessMap: micro.map, roughness: 0.62, metalness: 0.42, clearcoat: 0.2, clearcoatRoughness: 0.55 }),
     shell: P({ color: 0x2b2e33, roughnessMap: micro.map, roughness: 0.5, metalness: 0.7, clearcoat: 0.22, clearcoatRoughness: 0.4 }),

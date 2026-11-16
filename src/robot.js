@@ -178,7 +178,7 @@ function buildRobot(M) {
   const chest = new THREE.Group(); chest.position.set(0, 1.1, 0); root.add(chest);
   const TP = panels([[0.0, 0.112, 0.084, 0.080, 2.5], [0.07, 0.128, 0.097, 0.088, 2.5], [0.17, 0.166, 0.120, 0.100, 2.5], [0.27, 0.200, 0.134, 0.108, 2.6], [0.345, 0.202, 0.122, 0.104, 2.9], [0.40, 0.150, 0.094, 0.090, 2.6], [0.43, 0.100, 0.074, 0.074, 2.3]], [0.1, 0.238],
     { capB: 0.02, capT: 0.03, segU: 96, segV: 64 }), torsoG = TP[2];      /* abdomen, ribs, chest plate */
-  TP.forEach((pg, i) => mk(pg, i === 1 ? M.satin : M.carbon, chest));
+  TP.forEach(pg => mk(pg, M.carbon, chest));
   mk(TP.core, M.rubber, chest);
   mk(new THREE.TorusGeometry(0.066, 0.011, 20, 64), M.metalDark, chest, [0, 0.424, 0.002], [Math.PI / 2, 0, 0]);
   mk(new THREE.TorusGeometry(0.058, 0.004, 14, 64), M.metal, chest, [0, 0.437, 0.002], [Math.PI / 2, 0, 0]);
