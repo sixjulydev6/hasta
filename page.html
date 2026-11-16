@@ -1562,7 +1562,9 @@ function buildProps(M) {
 
     const key = new THREE.DirectionalLight(0xffffff, 1.7);
     key.position.set(-2.4, 4.6, 3.4); key.castShadow = true;
-    key.shadow.mapSize.set(2048, 2048);
+    /* the shadow map is drawn twice a frame in the studio (reflection + main pass); touch GPUs get a quarter of the pixels */
+    const shadowRes = matchMedia('(pointer: coarse)').matches ? 1024 : 2048;
+    key.shadow.mapSize.set(shadowRes, shadowRes);
     Object.assign(key.shadow.camera, { left: -1.6, right: 1.6, top: 2.3, bottom: -1.8, near: 0.5, far: 12 });
     key.shadow.bias = -0.0004; key.shadow.normalBias = 0.018; key.shadow.radius = 2.5;
     scene.add(key);
@@ -1729,6 +1731,8 @@ function buildProps(M) {
       { el: $('#box-egg'), c: v3(0, 0, 0), h: v3(0.026, 0.032, 0.026), egg: true }
     ];
     const hud = $('#hud'), ew = v3(), fx = v3();
+    /* --fin / --room go on the only elements that read them; set on <html> they restyle the whole page */
+    const finEl = $('#finale'), vigEl = $('.vig');
 
     /* render resolution: touch devices get a lower cap (they run out of fill rate, not pixels), and
        `quality` steps down when frames keep running long, so scrolling stays fluid on slower GPUs */
@@ -1847,7 +1851,7 @@ function buildProps(M) {
       setForce(K.force(tau), time);
       renderer.toneMappingExposure = expo;
       const fin = K.fin(tau), rm = K.room(tau);
-      if (!shot) put('fin', fin.toFixed(2), v => root.style.setProperty('--fin', v));
+      if (!shot) put('fin', fin.toFixed(2), v => { if (finEl) finEl.style.setProperty('--fin', v); });
       panel.visible = fin > 0.002; panel.material.opacity = fin;
       /* in the studio: a soft top light from the ceiling strips and cool back light off the wall */
       backs[0].color.lerpColors(WARM, COOL, clamp(rm * 1.6)); backs[1].color.copy(backs[0].color);
@@ -1863,7 +1867,7 @@ function buildProps(M) {
       M.stand.opacity = M.oak.opacity = M.cup.opacity = ta; T.group.visible = ta > 0.01 && !(shot && shot.hideTray);
       M.egg.opacity = ea; if (ea < 0.01) T.egg.visible = false;
       blob.material.opacity = rm * 0.75; blob.visible = rm > 0.01;
-      if (!shot) put('room', rm.toFixed(2), v => root.style.setProperty('--room', v));
+      if (!shot) put('room', rm.toFixed(2), v => { if (vigEl) vigEl.style.setProperty('--room', v); });
 
       /* camera: frame for the viewport, shift for the hero's index column */
       const aspect = shot ? shot.w / shot.h : W / Hh;
@@ -1913,12 +1917,18 @@ function buildProps(M) {
       }
     }
     /* stills for the card rail: the live model, re-posed and photographed off-screen */
+    /* rendering these also compiles the studio and prop shaders up front, so the first scroll into those
+       chapters does not stall. Frames are captured with toBlob (the snapshot is synchronous, the JPEG
+       encode runs off the main thread) instead of toDataURL, which blocked for hundreds of ms on phones */
     function stills(list, w, h) {
       renderer.setPixelRatio(1); renderer.setSize(w, h, false);
       if (post) post.setSize(w, h);
-      const out = list.map(s => { frame(s.tau, 0, 3, 1, Object.assign({ w, h }, s)); return canvas.toDataURL('image/jpeg', 0.9); });
+      const out = list.map(s => {
+        frame(s.tau, 0, 3, 1, Object.assign({ w, h }, s));
+        return new Promise(done => canvas.toBlob(b => done(b ? URL.createObjectURL(b) : null), 'image/jpeg', 0.9));
+      });
       sized = ''; resize();
-      return out;
+      return Promise.all(out);
     }
     return { frame, resize, highFive, stills, hello };
   }
@@ -1957,12 +1967,25 @@ function buildProps(M) {
     { tau: 4.3, cam: [0.3, 1.25, 1.05], tgt: [-0.1, 1.2, 0.49], fov: 21, prop: 'jar' },                            /* laboratory: a sample jar between fingertips */
     { tau: 3.32, cam: [0.2, 1.08, 1.02], tgt: [-0.11, 0.985, 0.4], fov: 22 }                                       /* kitchen: the egg */
   ];
-  if (gl) setTimeout(() => {
+  /* the stills are one heavy burst of rendering: run it when the browser is idle and the reader is not
+     mid-scroll, so it never lands as a hitch under their finger */
+  let lastScroll = 0;
+  addEventListener('scroll', () => { lastScroll = performance.now(); }, { passive: true });
+  const idle = fn => { if (typeof window.requestIdleCallback === 'function') requestIdleCallback(fn, { timeout: 2500 }); else setTimeout(fn, 200); };
+  const makeStills = () => {
+    if (!gl) return;
+    if (performance.now() - lastScroll < 300) { setTimeout(() => idle(makeStills), 300); return; }
     try {
-      const urls = gl.stills(STILLS, 720, 900);
-      $$('.shot').forEach(el => { const im = new Image(); im.alt = ''; im.src = urls[+el.dataset.shot]; el.replaceChildren(im); });
+      gl.stills(STILLS, 720, 900).then(urls => {
+        $$('.shot').forEach(el => {
+          const u = urls[+el.dataset.shot];
+          if (!u) return;
+          const im = new Image(); im.alt = ''; im.decoding = 'async'; im.src = u; el.replaceChildren(im);
+        });
+      }, () => { /* cards keep their colour blocks */ });
     } catch (err) { /* cards keep their colour blocks */ }
-  }, 350);
+  };
+  if (gl) setTimeout(() => idle(makeStills), 350);
 
   function tick(now) {
     if (window.__hastaFrameMs && now - lastT < window.__hastaFrameMs) return requestAnimationFrame(tick);   /* test hook: cap the frame rate */
