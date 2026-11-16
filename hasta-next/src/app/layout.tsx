@@ -1,10 +1,29 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import '@/styles/globals.css';
+import { SITE_DESCRIPTION, SITE_KEYWORDS, SITE_NAME, SITE_TITLE, SITE_URL } from '@/lib/hasta/site';
 
 export const metadata: Metadata = {
-  title: 'Hasta',
-  description: "Strength is solved. Hands aren't. A scroll-driven look at Hasta, a concept service robot built around its hands.",
+  metadataBase: new URL(SITE_URL),
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  keywords: SITE_KEYWORDS,
+  alternates: { canonical: '/' },
+  robots: { index: true, follow: true },
+  openGraph: {
+    type: 'website',
+    url: '/',
+    siteName: SITE_NAME,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    locale: 'en_US',
+  },
+  twitter: {
+    card: 'summary',
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
 };
 
 export const viewport: Viewport = {

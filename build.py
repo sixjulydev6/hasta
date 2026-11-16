@@ -10,10 +10,22 @@ root = pathlib.Path(__file__).resolve().parent
 src = lambda n: (root / 'src' / n).read_text()
 CDN = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js'
 FONTS = 'https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;700&family=Geist+Mono:wght@400;500&display=swap'
-head = f'''<title>Hasta</title>
+TITLE = "Hasta — Strength is solved. Hands aren't."
+DESC = "Strength is solved. Hands aren't. A scroll-driven look at Hasta, a concept service robot built around its hands."
+head = f'''<title>{TITLE}</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Strength is solved. Hands aren't. A scroll-driven look at Hasta, a concept service robot built around its hands.">
+<meta name="description" content="{DESC}">
+<meta name="keywords" content="Hasta, robot, service robot, robotic hands, dexterity, three.js, 3D">
+<meta name="robots" content="index, follow">
 <meta name="theme-color" content="#fffdfd">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Hasta">
+<meta property="og:title" content="{TITLE}">
+<meta property="og:description" content="{DESC}">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{TITLE}">
+<meta name="twitter:description" content="{DESC}">
 <link rel="stylesheet" href="{FONTS}">
 <style>
 {src('style.css')}</style>
